@@ -34,8 +34,9 @@ I found a bus enthusiast. Chee Aun who scraped the LTA data: https://github.com/
 The processed data is in: https://github.com/cheeaun/sgbusdata/tree/main/data/v1
 
 1. Services: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/services.json
-1. Routes: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/routes.json
 1. Stops: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/stops.json
+
+Note: Services above include route information. routes.json is a kml path file.
 
 Related to Stops is the first and last bus info:  curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/firstlast.json
 

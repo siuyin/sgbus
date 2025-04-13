@@ -71,12 +71,11 @@ MATCH (n) -[r]- (m) RETURN n,r,m
 
 Shortest paths:
 ```
-MATCH path=(n {code:"10001"}) -[:NEXT *ALLSHORTEST (r, n | 1)]-> (m {code: "10003"}) RETURN path
+MATCH pth=(n {code:"10001"}) -[:NEXT *ALLSHORTEST (r, n | 1)]-> (m {code: "10003"}) RETURN pth
 ```
 
 Path list:
 ```
-MATCH path=(n {code:"10001"})-[relationships:NEXT *ALLSHORTEST (r, n | 1)]->(m {code:"10003"})
-UNWIND (relationships(path)) AS edge
-RETURN DISTINCT edge;
+MATCH pth=(n {code:"10003"})-[r:NEXT *ALLSHORTEST (r, n | 1)]->(m {code:"10001"})
+RETURN  path.elements(pth)
 ```

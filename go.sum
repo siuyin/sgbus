@@ -1,0 +1,4 @@
+github.com/neo4j/neo4j-go-driver/v5 v5.28.0 h1:chDT68PHNa8JZRmjSkGzAbk1weLWo4rMtDvccvpobg0=
+github.com/neo4j/neo4j-go-driver/v5 v5.28.0/go.mod h1:Vff8OwT7QpLm7L2yYr85XNWe9Rbqlbeb9asNXJTHO4k=
+github.com/siuyin/dflt v0.0.0-20230329062002-0475f4d54412 h1:wa75y3NwGEDSzxJ0dPdIadS0hCA4Jbq0m1RZoksrHR8=
+github.com/siuyin/dflt v0.0.0-20230329062002-0475f4d54412/go.mod h1:+WsKak36sIJb+W3/mAlKWpfpWdo2y7tv3/zxu6YE9O4=

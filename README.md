@@ -33,8 +33,10 @@ I found a bus enthusiast. Chee Aun who scraped the LTA data: https://github.com/
 
 The processed data is in: https://github.com/cheeaun/sgbusdata/tree/main/data/v1
 
-1. Services: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/services.json
-1. Stops: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/stops.json
+Run the following to update the data:
+
+1. Services: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/services.json > data/services.json
+1. Stops: curl https://raw.githubusercontent.com/cheeaun/sgbusdata/refs/heads/main/data/v1/stops.json > data/stops.json
 
 Note: Services above include route information. routes.json is a kml path file.
 
@@ -77,5 +79,47 @@ MATCH pth=(n {code:"10001"}) -[:NEXT *ALLSHORTEST (r, n | 1)]-> (m {code: "10003
 Path list:
 ```
 MATCH pth=(n {code:"10003"})-[r:NEXT *ALLSHORTEST (r, n | 1)]->(m {code:"10001"})
+RETURN  path.elements(pth)
+```
+
+## Build graph database
+
+### Install and run memgraph
+I currently target memgraph (https://memgraph.com/docs). memgraph is neo4j compatible and uses neo4j drivers to access the database.
+
+I used `curl https://install.memgraph.com | sh` which creates a `memgraph-platform` folder containing a `docker compose` yaml file.
+
+Run: `docker compose up -d` to bring up `memgraph-mage` and `memgraph-lab`. The -d flag stands for daemonize or run in background.
+
+Run: `docker compose stop|start` to stop or start the container set.
+
+Run: `docker compose down` to remove the containers. WARNING: this will also delete all your data. 
+
+### Populate memgraph
+To drop or delete the graph database, issue in memgraph-lab / querie execution:
+```
+STORAGE MODE IN_MEMORY_ANALYTICAL
+DROP GRAPH
+```
+
+Create Label+Property indexs to facility quick bus Stop lookup:
+```
+CREATE INDEX ON :Stop(code)
+```
+`SHOW INDEX INFO` to display indexes.
+
+`go run cmd/load_memgraph/main.go` to create Stops and add :NEXT relations/edges to memgraph. This operation is **NOT** idempotent. You can `DROP GRAPH` and start over if you ran this more than once.
+
+The follow shortest path do not yield pratical routes because a weight of 1 was used.
+I need to think up a way to penalize bus service changes.
+
+Shortest path:
+```
+MATCH pth=(n {code:"23069"}) -[:NEXT *WSHORTEST (r, n | 1)]-> (m {code: "44529"}) RETURN pth
+```
+
+Path list:
+```
+MATCH pth=(n {code:"23069"})-[r:NEXT *WSHORTEST (r, n | 1)]->(m {code:"44529"})
 RETURN  path.elements(pth)
 ```

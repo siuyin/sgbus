@@ -17,15 +17,14 @@ type StopDetail struct {
 type Stop map[string]StopDetail
 
 // Usage: Stop["10009"].Desc
-func ParseStops() Stop {
-	f := openStopsFile()
+func ParseStops(fn string) Stop {
+	f := openStopsFile(fn)
 	defer f.Close()
 
 	dat := readStopsDat(f)
 	return toStop(dat)
 }
-func openStopsFile() *os.File {
-	const fn = "../../testdata/cheeaun/stops.json"
+func openStopsFile(fn string) *os.File {
 	f, err := os.Open(fn)
 	if err != nil {
 		log.Fatal(err)
@@ -63,5 +62,26 @@ func toStop(dat map[string]any) Stop {
 		}
 		s[k] = sd
 	}
+	return s
+}
+
+type Service map[string]struct {
+	Name  string     `json:"name"`
+	Route [][]string `json:"routes"`
+}
+
+func ParseServices(fn string) Service {
+	f, err := os.Open(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	s := make(Service)
+	dec := json.NewDecoder(f)
+	if err := dec.Decode(&s); err != nil {
+		log.Fatal(err)
+	}
+
 	return s
 }
